@@ -9,9 +9,11 @@
 require_once 'database.php';
 
 // start our transacton
-if( !$mysqli->begin_transaction() )
-    die( "Error: could not start transaction" );
-
+if( !$mysqli->query( 'start transaction' ) )
+{
+    echo "(" . $mysqli->errno . ") " . $mysqli->error . "\n";
+    die( "Error: could not start transaction\n" );
+}
 // find all ixps without a parent
 $ixpsq = $mysqli->query( 'SELECT * FROM ixps WHERE parent_id IS NULL' );
 
@@ -69,4 +71,4 @@ while( $ixp = $ixpsq->fetch_object() )
 }
 
 if( $error_count == 0 )
-    $mysqli->commit();
+    $mysqli->query( 'commit' );
